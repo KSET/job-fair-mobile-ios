@@ -1,0 +1,13 @@
+query Workshops {
+    workshops {
+        id
+        occures_at
+        finishes_at
+        location
+        name
+        description
+        company {
+            ...CompanyDetails
+        }
+    }
+}

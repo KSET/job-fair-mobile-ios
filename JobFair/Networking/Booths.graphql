@@ -1,0 +1,9 @@
+query Booths {
+    booths {
+        id
+        geolocation
+        company {
+            ...CompanyDetails
+        }
+    }
+}

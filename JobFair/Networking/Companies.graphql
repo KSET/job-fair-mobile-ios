@@ -1,0 +1,36 @@
+query Companies {
+    companies {
+        ...CompanyDetails
+    }
+}
+
+fragment CompanyDetails on Company {
+    id
+    name
+    homepage_url
+    short_description
+    industry {
+        id
+        name
+    }
+    logo {
+        medium {
+            url
+        }
+    }
+    presentation {
+        title
+        occures_at
+    }
+    workshop {
+        name
+        occures_at
+    }
+    cocktail {
+        name
+    }
+    booth {
+        id
+        location
+    }
+}

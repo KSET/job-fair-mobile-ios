@@ -1,0 +1,19 @@
+query Presentations {
+    presentations {
+        id
+        occures_at
+        finishes_at
+        location
+        description
+        presenter_bio
+        title
+        presenter_photo {
+            medium {
+                url
+            }
+        }
+        company {
+            ...CompanyDetails
+        }
+    }
+}
