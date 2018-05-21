@@ -54,3 +54,11 @@ Below is the list of those files or values and instructions for the setup.
 - Add `Google-Service-Info.plist` and `Google-Service-Info-Test.plist` files to `SupportFiles` folder
 - `Google-Service-Info-Test.plist` is used for `test` and `Google-Service-Info.plist` for `release` build.
 - Add your Google Maps API key to proper google service plist under plist key `GOOGLE_MAPS_API_KEY`.
+
+# Developed by Undabot
+
+[![undabot_logo](https://user-images.githubusercontent.com/12301477/40064040-fcf22afe-585e-11e8-9315-9ecf70ebad7f.png)](https://undabot.com)
+
+## About Undabot
+
+We are coders, makers, thinkers, and creators of **#mobilemoments**. Would you like to join us? Check out the open positions at our [Careers](https://undabot.com/careers/) page!
