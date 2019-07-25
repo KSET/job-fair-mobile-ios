@@ -6,6 +6,7 @@ struct Config {
         static let website = URL(string: "https://jobfair.fer.unizg.hr/")!
         static let undabotWeb = URL(string: "https://undabot.com/")!
         static let googleMaps = URL(string: "https://www.google.com/maps/@45.8011031,15.9710031,17.5z")!
+        static let submitCV = "https://jobfair-staging.kset.org/hr/zivotopisi/novo"
         
         static var apiBase: URL {
             #if DEBUG

@@ -10,8 +10,8 @@ extension UILabel {
         paragraphStyle.lineHeightMultiple = lineHeightMultiple
         
         let attributedString: NSMutableAttributedString
-        if let labelattributedText = attributedText {
-            attributedString = NSMutableAttributedString(attributedString: labelattributedText)
+        if let labelAttributedText = attributedText {
+            attributedString = NSMutableAttributedString(attributedString: labelAttributedText)
         } else {
             attributedString = NSMutableAttributedString(string: labelText)
         }

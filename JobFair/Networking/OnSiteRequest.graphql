@@ -1,0 +1,11 @@
+mutation OnSiteRequest($input: OnsiteRequestInput!) {
+  onsite_request(input: $input) {
+    data {
+      id
+      items {
+        id
+        amount
+      }
+    }
+  }
+}

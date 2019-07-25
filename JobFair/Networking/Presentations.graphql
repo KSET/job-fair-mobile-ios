@@ -4,6 +4,7 @@ query Presentations {
         occures_at
         finishes_at
         location
+        geolocation
         description
         presenter_bio
         title

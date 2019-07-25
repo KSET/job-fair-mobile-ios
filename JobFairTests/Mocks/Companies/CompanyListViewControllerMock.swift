@@ -2,7 +2,7 @@ import Quick
 import Nimble
 @testable import JobFair
 
-class CompanyListViewControllerMock: CompanyListViewController, CompanyFilterViewControllerDelegate {
+class CompanyListViewControllerMock: CompanyListViewController {
     var didSetCompanies = false
     var didShowLoadingView = false
     var didShowError = false

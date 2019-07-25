@@ -1,16 +1,19 @@
 import Foundation
 import UIKit
+import Kingfisher
 
 class NewsDetailsView: UIView {
     let titleLabel = UILabel()
     let dateLabel = UILabel()
     let contentTextView = UITextView()
+    let imageView = UIImageView()
     
     var news: NewsViewModel? {
         didSet {
             titleLabel.text = news?.title
             dateLabel.text = news?.publishedAt
             contentTextView.attributedText = news?.content
+            imageView.kf.setImage(with: news?.imageUrl)
             
             let screenWidth = UIScreen.main.bounds.size.width
             if let height = news?.content.height(withConstrainedWidth: screenWidth - 64) {
@@ -23,8 +26,9 @@ class NewsDetailsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
-        setTitleLabel()
+        setImageView()
         setDateLabel()
+        setTitleLabel()
         setContentTextView()
     }
     
@@ -32,20 +36,36 @@ class NewsDetailsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setImageView() {
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(imageView)
+        imageView.addCornerRadius()
+        imageView.clipsToBounds = true
+        
+        NSLayoutConstraint.activate(
+            [
+                imageView.topAnchor.constraint(equalTo: topAnchor, constant: .systemPadding),
+                imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .systemPadding),
+                imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding),
+                imageView.heightAnchor.constraint(equalToConstant: 170)
+            ]
+        )
+    }
+    
     private func setTitleLabel() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: .systemPadding),
+            titleLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: .systemPadding),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .systemPadding),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding)
             ])
         
-        titleLabel.textColor = .darkGray
+        titleLabel.textColor = .black
         titleLabel.textAlignment = .left
         titleLabel.numberOfLines = 0
-        titleLabel.font = .titleLarge
+        titleLabel.font = .detailTitle
     }
     
     private func setDateLabel() {
@@ -53,12 +73,12 @@ class NewsDetailsView: UIView {
         addSubview(dateLabel)
         
         NSLayoutConstraint.activate([
-            dateLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: .systemPadding),
+            dateLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: .systemPadding),
             dateLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .systemPadding),
             dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding)
             ])
         
-        dateLabel.textColor = .lightGray
+        dateLabel.textColor = .secondaryColor
         dateLabel.textAlignment = .left
         dateLabel.numberOfLines = 1
         dateLabel.font = .contentLight
@@ -69,7 +89,7 @@ class NewsDetailsView: UIView {
         addSubview(contentTextView)
         
         NSLayoutConstraint.activate([
-            contentTextView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: .systemPadding),
+            contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: .systemPadding),
             contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .systemPadding),
             contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding),
             contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -.systemPadding)

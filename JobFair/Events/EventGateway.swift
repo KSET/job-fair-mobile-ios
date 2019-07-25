@@ -50,4 +50,19 @@ class EventGateway {
             return Disposables.create()
         }
     }
+    
+    func rateEvent(workshopId: String?, presentationId: String?, rating: Int) -> Single<Void> {
+        let input = EventReviewInput(clientMutationId: nil, presentationId: presentationId, workshopId: workshopId, value: rating, review: nil)
+        return Single<Void>.create { single -> Disposable in
+            NetworkClient.shared.apollo.perform(mutation: RateEventMutation(input: input)) { (result, error) in
+                if let error = error {
+                    single(.error(error))
+                } else if result?.data != nil {
+                    single(.success(()))
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
 }

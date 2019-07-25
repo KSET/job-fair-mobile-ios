@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 class EventCoordinator {
 
@@ -7,9 +7,11 @@ class EventCoordinator {
     var navigationService: EventNavigationService
     private let presenter: EventPresenter
 
-    init(viewController: EventsViewController) {
+    // needs to receive navigation controller through initializer because navigation controller is not properly linked to view controller
+    //(issue with XLPagerTabStrip)
+    init(viewController: EventsViewController, navigationController: UINavigationController?) {
         presenter = EventPresenter(viewController: viewController)
-        navigationService = EventNavigationService(navigationController: viewController.navigationController)
+        navigationService = EventNavigationService(navigationController: navigationController)
     }
 
     func viewDidLoad(eventType: EventType) {
@@ -51,6 +53,14 @@ extension EventCoordinator: EventListDelegate {
 }
 
 extension EventCoordinator: EventViewDelegate {
+    
+    func didTapRateView(for event: EventViewModel, rating: Double) {
+        eventStore.rateEvent(eventType: event.type, eventId: event.id, rating: rating)
+    }
+    
+    func didTapEventLocationButton(for location: Geolocation) {
+        navigationService.showBoothsViewController(at: location)
+    }
     
     func didTapCompanyButton(for company: CompanyViewModel) {
         navigationService.showCompanyDetailsViewController(for: company)

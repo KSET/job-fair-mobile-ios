@@ -1,12 +1,14 @@
 import UIKit
 
 protocol CompanyFilterViewControllerDelegate: class {
-    func didSelectIndustry(_ industryId: String)
+    func didSelectIndustry(_ industry: IndustryViewModel)
+    func showErrorDialog()
 }
 
 class CompanyFilterViewController: UIViewController {
+    
     private let industryTableViewCellIdentifier = "IndustryTableViewCell"
-    private weak var companyFilterViewControllerDelegate: CompanyFilterViewControllerDelegate?
+    private weak var delegate: CompanyFilterViewControllerDelegate?
     private var coordinator: CompanyFilterCoordinator!
     private let itemSpacing: CGFloat = 8
     private let tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -19,8 +21,8 @@ class CompanyFilterViewController: UIViewController {
         }
     }
     
-    init(companyFilterViewControllerDelegate: CompanyFilterViewControllerDelegate?, currentIndustryId: String) {
-        self.companyFilterViewControllerDelegate = companyFilterViewControllerDelegate
+    init(delegate: CompanyFilterViewControllerDelegate?, currentIndustryId: String) {
+        self.delegate = delegate
         self.currentIndustryId = currentIndustryId
         super.init(nibName: nil, bundle: nil)
     }
@@ -31,41 +33,33 @@ class CompanyFilterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.setDefaultNavigationBarAppearance()
-        coordinator = CompanyFilterCoordinator(viewController: self, navigationController: navigationController)
+        coordinator = CompanyFilterCoordinator(viewController: self)
         title = Constants.Industries.title
         setupUI()
         coordinator.viewDidLoad()
     }
 
     func showError() {
-        coordinator.didGetError()
+        delegate?.showErrorDialog()
     }
     
     private func setupUI() {
         view.backgroundColor = .white
+        view.addBorder()
+        view.addCornerRadius()
+        view.layer.borderColor = UIColor.brandColor.cgColor
         setTableView()
-        setCloseButton()
     }
     
     private func setTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.separatorInset = .zero
         tableView.register(IndustryTableViewCell.self, forCellReuseIdentifier: industryTableViewCellIdentifier)
-        tableView.separatorStyle = .none
-        
+        tableView.tableFooterView = UIView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
         tableView.pinAllEdges(to: view)
-    }
-    
-    private func setCloseButton() {
-        let closeBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "close"), style: .plain, target: coordinator, action: #selector(didTapCloseButton))
-        navigationItem.leftBarButtonItem = closeBarButtonItem
-    }
-    
-    @objc func didTapCloseButton() {
-        coordinator.didSelectDismissAction()
     }
 }
 
@@ -82,7 +76,7 @@ extension CompanyFilterViewController: UITableViewDataSource {
         
         let industry = industries[indexPath.row]
         let isCurrent = industry.id == currentIndustryId
-        industryTableViewCell.configureCell(with: industry, isCurrent: isCurrent)
+        industryTableViewCell.configureCell(with: industry, isFirst: indexPath.row == 0, isCurrent: isCurrent)
         return industryTableViewCell
     }
 }
@@ -91,9 +85,8 @@ extension CompanyFilterViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let industry = industries[indexPath.row]
-        companyFilterViewControllerDelegate?.didSelectIndustry(industry.id)
+        delegate?.didSelectIndustry(industry)
         currentIndustryId = industry.id
         tableView.reloadData()
-        coordinator.didSelectIndustry()
     }
 }

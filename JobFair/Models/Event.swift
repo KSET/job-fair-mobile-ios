@@ -7,5 +7,6 @@ protocol Event {
     var startDate: Date { get }
     var endDate: Date { get }
     var location: String { get }
+    var geolocation: Geolocation { get }
     var company: Company { get }
 }

@@ -9,6 +9,7 @@ struct Presentation: Event, Equatable {
     let startDate: Date
     let endDate: Date
     let location: String
+    let geolocation: Geolocation
     let company: Company
 }
 
@@ -28,5 +29,9 @@ extension Presentation {
         company = Company(queryCompany: queryPresentation.company?.fragments.companyDetails)!
         startDate = SharedDateFormatter.shared.date(from: queryPresentation.occuresAt!)!
         endDate = SharedDateFormatter.shared.date(from: queryPresentation.finishesAt!)!
+        let geoLocationComponents = queryPresentation.geolocation?.split(separator: ",")
+        let latitude = geoLocationComponents?.first
+        let longitude = geoLocationComponents?[1]
+        geolocation = Geolocation(latitude: Double(latitude ?? "0")!, longitude: Double(longitude ?? "0")!)
     }
 }

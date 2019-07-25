@@ -42,13 +42,6 @@ class InfoCoordinatorShould: QuickSpec {
             }
         }
         
-        describe("didSelectDismissAction()") {
-            it("should tell navigationService to dismiss") {
-                sut.didSelectDismissAction()
-                expect(navigationService.didDismiss) == true
-            }
-        }
-        
         describe("didSelectShareAction()") {
             it("should tell navigationService to share website") {
                 sut.didSelectShareAction()

@@ -11,6 +11,7 @@ class EventsPagerViewController: UIPageViewController {
         self.events = events
         self.eventIndex = eventIndex
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        title = Constants.Events.agenda
     }
 
     required init?(coder: NSCoder) {
@@ -61,6 +62,20 @@ extension EventsPagerViewController: UIPageViewControllerDataSource {
 }
 
 extension EventsPagerViewController: Swipeable {
+    
+    @objc
+    private func didTapCalendarButton() {
+        guard let currentViewController = viewControllers?.first as? EventViewController else {
+            return
+        }
+        
+        eventViewDelegate?.didTapCalendarButton(for: currentViewController.event)
+    }
+    
+    var rightNavigationItem: UIBarButtonItem? {
+        let buttonImage = UIImage(named: "calendar")
+        return UIBarButtonItem(image: buttonImage, style: .plain, target: self, action: #selector(didTapCalendarButton))
+    }
 
     func showNextPage() {
         guard let currentViewController = viewControllers?.first,

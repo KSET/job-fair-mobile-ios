@@ -18,10 +18,6 @@ class InfoCoordinator {
         navigationService.open(url)
     }
     
-    func didSelectDismissAction() {
-        navigationService.dismiss()
-    }
-    
     func didSelectShareAction() {
         navigationService.shareWebsite()
     }

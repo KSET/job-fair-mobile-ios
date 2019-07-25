@@ -22,6 +22,16 @@ extension UIView {
             ])
     }
     
+    func pinAllEdges(to view: UIView, insets: UIEdgeInsets) {
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: view.topAnchor, constant: insets.top),
+            leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: insets.left),
+            trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -insets.right),
+            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -insets.bottom)
+            ])
+    }
+    
     func matchWidth(of view: UIView) {
         translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

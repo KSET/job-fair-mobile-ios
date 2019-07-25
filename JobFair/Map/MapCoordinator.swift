@@ -6,7 +6,7 @@ class MapCoordinator {
     var navigationService: CompanyNavigationService
     private let presenter: MapPresenter
 
-    init(viewController: MapViewController) {
+    init(viewController: BoothsViewController) {
         presenter = MapPresenter(viewController: viewController)
         navigationService = CompanyNavigationService(navigationController: viewController.navigationController)
     }

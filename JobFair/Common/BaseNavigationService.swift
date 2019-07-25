@@ -9,8 +9,10 @@ class BaseNavigationService: NSObject {
     }
     
     func showErrorAlert(retryCompletion: (() -> Void)? = nil) {
-        let alertViewController = UIAlertController(title: Constants.ErrorAlertController.title, message: Constants.ErrorAlertController.message, preferredStyle: .alert)
-        let retryAction = UIAlertAction(title: Constants.ErrorAlertController.retryTitle, style: .default) { _ in
+        let actionTitle = retryCompletion == nil ? Constants.ErrorAlertController.okTitle : Constants.ErrorAlertController.retryTitle
+        let alertViewController = UIAlertController(title: Constants.ErrorAlertController.title,
+                                                    message: Constants.ErrorAlertController.message, preferredStyle: .alert)
+        let retryAction = UIAlertAction(title: actionTitle, style: .default) { _ in
             retryCompletion?()
         }
         alertViewController.addAction(retryAction)
@@ -18,6 +20,10 @@ class BaseNavigationService: NSObject {
     }
     
     func open(_ url: URL) {
+        guard !url.absoluteString.contains("mailto") else {
+            UIApplication.shared.openURL(url)
+            return
+        }
         let safariViewController = SFSafariViewController(url: url)
         navigationController?.present(safariViewController, animated: true)
     }

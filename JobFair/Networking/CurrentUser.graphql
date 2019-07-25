@@ -1,0 +1,15 @@
+query CurrentUser {
+    current_user {
+        first_name
+        last_name
+        email
+        name
+        role
+        resume {
+            uid
+        }
+        companies {
+            ...CompanyDetails
+        }
+    }
+}

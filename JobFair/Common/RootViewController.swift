@@ -1,33 +1,71 @@
 import UIKit
 
-class RootViewController: UITabBarController {
+class RootViewController: UIViewController {
+    
+    private var coordinator: RootCoordinator!
+    
+    private let backgroundOverlayImageView = UIImageView()
+    private let logoImageView = UIImageView()
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    override var childViewControllerForStatusBarStyle: UIViewController? {
+        guard let navigationController = childViewControllers.last as? UINavigationController else {
+            return childViewControllers.first
+        }
 
+        return navigationController.visibleViewController
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let newsViewController = BaseNavigationController(rootViewController: NewsListViewController())
-        newsViewController.tabBarItem = UITabBarItem(title: Constants.News.title, image: #imageLiteral(resourceName: "news"), selectedImage: #imageLiteral(resourceName: "news_active"))
-
-        let presentationsViewController = BaseNavigationController(rootViewController: EventsViewController(eventType: .presentations))
-        presentationsViewController.tabBarItem = UITabBarItem(title: EventType.presentations.title, image: #imageLiteral(resourceName: "presentations"), selectedImage: #imageLiteral(resourceName: "presentations_active"))
-
-        let workshopsViewController = BaseNavigationController(rootViewController: EventsViewController(eventType: .workshops))
-        workshopsViewController.tabBarItem = UITabBarItem(title: EventType.workshops.title, image: #imageLiteral(resourceName: "workshop"), selectedImage: #imageLiteral(resourceName: "workshop_active"))
-
-        let companiesViewController = BaseNavigationController(rootViewController: CompanyListViewController())
-        companiesViewController.tabBarItem = UITabBarItem(title: Constants.Companies.title, image: #imageLiteral(resourceName: "company"), selectedImage: #imageLiteral(resourceName: "company_active"))
-
-        let mapViewController = BaseNavigationController(rootViewController: MapViewController())
-        mapViewController.tabBarItem = UITabBarItem(title: Constants.Map.title, image: #imageLiteral(resourceName: "map"), selectedImage: #imageLiteral(resourceName: "map_active"))
-
-        setViewControllers(
+        setupBackgroundOverlay()
+        setupLogoImage()
+        coordinator = RootCoordinator(viewController: self)
+        coordinator.showInitalScreen()
+    }
+    
+    func showLoginViewController() {
+        let loginViewController = LoginViewController()
+        loginViewController.delegate = self
+        let navigationController = UINavigationController(rootViewController: loginViewController)
+        show(navigationController)
+    }
+    
+    func showTabBarViewController() {
+        show(TabBarViewController())
+        setNeedsStatusBarAppearanceUpdate()
+    }
+    
+    private func setupBackgroundOverlay() {
+        view.addSubview(backgroundOverlayImageView)
+        backgroundOverlayImageView.image = UIImage(named: "background_overlay")
+        backgroundOverlayImageView.alpha = 0.3
+        backgroundOverlayImageView.contentMode = .scaleAspectFill
+        backgroundOverlayImageView.pinAllEdges(to: view)
+    }
+    
+    private func setupLogoImage() {
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.image = UIImage(named: "launch_image")
+        view.addSubview(logoImageView)
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(
             [
-                newsViewController,
-                presentationsViewController,
-                workshopsViewController,
-                companiesViewController,
-                mapViewController
-            ],
-            animated: false)
+                logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                logoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -32),
+                logoImageView.widthAnchor.constraint(equalToConstant: 240),
+                logoImageView.heightAnchor.constraint(equalToConstant: 120)
+            ]
+        )
+    }
+}
+
+extension RootViewController: LoginDelegate {
+    
+    func didFinishLogin() {
+        showTabBarViewController()
     }
 }

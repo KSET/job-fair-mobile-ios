@@ -6,7 +6,7 @@ class CompanyGateway {
     
     let apiClient: APIClient
     
-    init(apiClient: APIClient = ApolloClient(url: Config.URLs.apiBase)) {
+    init(apiClient: APIClient = NetworkClient.shared.apollo) {
         self.apiClient = apiClient
     }
     

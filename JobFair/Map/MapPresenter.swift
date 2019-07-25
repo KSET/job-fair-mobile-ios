@@ -2,9 +2,9 @@ import Foundation
 
 class MapPresenter: BoothPresenter {
 
-    unowned var viewController: MapViewController
+    unowned var viewController: BoothsViewController
 
-    init(viewController: MapViewController) {
+    init(viewController: BoothsViewController) {
         self.viewController = viewController
     }
 

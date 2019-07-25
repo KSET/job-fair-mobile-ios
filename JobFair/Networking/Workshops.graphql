@@ -4,6 +4,7 @@ query Workshops {
         occures_at
         finishes_at
         location
+        geolocation
         name
         description
         company {

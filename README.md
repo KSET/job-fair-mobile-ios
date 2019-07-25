@@ -39,7 +39,7 @@ List of the main libraries used in the application:
 
 - [Apollo](https://github.com/apollographql/apollo-ios) - used as a client for the GraphQL API
 - [Kingfisher](https://github.com/onevcat/Kingfisher) - used for downloading and caching images from the web
-- [FeedKit] (https://github.com/nmdias/FeedKit) - used as a client for the fetching RSS Feeds
+- [FeedKit] (https://github.com/nmdias/FeedKit) - used as a client for fetching the RSS Feeds
 - [RxSwift](https://github.com/ReactiveX/RxSwift) - used for reactive programming in Swift
 - [XLPagerTabStrip](https://github.com/xmartlabs/XLPagerTabStrip) - used as Container View Controller that allows us to switch easily among a collection of view controllers
 

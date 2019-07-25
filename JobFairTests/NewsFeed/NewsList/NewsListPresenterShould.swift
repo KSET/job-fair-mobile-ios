@@ -42,10 +42,7 @@ class NewsListPresenterShould: QuickSpec {
                 expect(presentedNews?.content.string).to(match(news.content))
                 expect(presentedNews?.thumbnailUrl?.path).to(match(news.thumbnailUrl))
                 expect(presentedNews?.imageUrl?.path).to(match(news.imageUrl))
-
-                let publishedAt = SharedDateFormatter.shared.string(from: news.publishedAt)
-                
-                expect(presentedNews?.publishedAt).to(equal(publishedAt))
+                expect(presentedNews?.publishedAt).to(equal("Just now"))
                 expect(presentedNews?.link.path).to(match(news.link))
             }
         }

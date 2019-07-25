@@ -6,7 +6,7 @@ class EventPresenterMock: EventPresenter {
     var events: SortedEvents?
 
     init() {
-        super.init(viewController: EventsViewController(eventType: .workshops))
+        super.init(viewController: EventsViewController(eventType: .workshops, navigationController: nil))
     }
 
     override func showError() {

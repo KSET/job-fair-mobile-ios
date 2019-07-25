@@ -7,7 +7,7 @@ class InfoDescriptionTableViewCell: UITableViewCell {
         }
     }
     
-    private let locationImageView = UIImageView()
+    private let locationLabel = UILabel()
     private var descriptionLabel = UILabel()
     private var titleLabel = UILabel()
     
@@ -23,7 +23,7 @@ class InfoDescriptionTableViewCell: UITableViewCell {
     private func setupConstraints() {
         setupTitleLabelConstraints()
         setupDescriptionLabelConstraints()
-        setupLocationImageViewConstraints()
+        setupLocationLabelConstraints()
     }
     
     private func setupTitleLabelConstraints() {
@@ -31,7 +31,7 @@ class InfoDescriptionTableViewCell: UITableViewCell {
         addSubview(titleLabel)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: .systemPadding),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .systemPadding),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding)
         ])
     }
@@ -40,19 +40,21 @@ class InfoDescriptionTableViewCell: UITableViewCell {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: .systemPadding),
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: .smallPadding),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -.systemPadding)
         ])
     }
     
-    private func setupLocationImageViewConstraints() {
-        locationImageView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(locationImageView)
+    private func setupLocationLabelConstraints() {
+        locationLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(locationLabel)
         NSLayoutConstraint.activate([
-            locationImageView.centerYAnchor.constraint(equalTo: descriptionLabel.centerYAnchor),
-            locationImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding)
+            locationLabel.centerYAnchor.constraint(equalTo: descriptionLabel.centerYAnchor),
+            locationLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding),
+            locationLabel.widthAnchor.constraint(equalToConstant: 64),
+            locationLabel.heightAnchor.constraint(equalToConstant: 24)
         ])
     }
     
@@ -60,23 +62,31 @@ class InfoDescriptionTableViewCell: UITableViewCell {
         setDescriptionLabel(with: viewModel?.description)
         selectionStyle = .none
         setTitleLabel()
-        setLocationImageView()
+        setLocationButton()
     }
     
     private func setTitleLabel() {
         titleLabel.text = viewModel?.name
-        titleLabel.font = .titleMedium
+        titleLabel.font = .headerTitle
+        titleLabel.textColor = .secondaryColor
     }
     
-    private func setDescriptionLabel(with description: String?) {
-        descriptionLabel.text = description
+    private func setDescriptionLabel(with description: NSAttributedString?) {
+        descriptionLabel.font = .titleRegular
+        descriptionLabel.textColor = .black
+        descriptionLabel.attributedText = description
         descriptionLabel.setLineSpacing(lineSpacing: 5)
         descriptionLabel.numberOfLines = 0
-        descriptionLabel.font = .titleRegular
-        descriptionLabel.textColor = .darkGray
     }
     
-    private func setLocationImageView() {
-        locationImageView.image = viewModel!.isSelectable ? #imageLiteral(resourceName: "location") : nil
+    private func setLocationButton() {
+        locationLabel.backgroundColor = .brandColor
+        locationLabel.addCornerRadius()
+        locationLabel.textColor = .white
+        locationLabel.font = .cellTitleMedium
+        locationLabel.text = Constants.Social.mapsButtonTitle
+        locationLabel.clipsToBounds = true
+        locationLabel.textAlignment = .center
+        locationLabel.isHidden = !viewModel!.isSelectable
     }
 }

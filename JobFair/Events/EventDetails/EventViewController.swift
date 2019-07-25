@@ -20,22 +20,17 @@ class EventViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         view.addSubview(eventView)
-        
         setEventView()
     }
 
     private func setEventView() {
         eventView.viewDelegate = eventViewDelegate
-        eventView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate(
-            [
-                eventView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
-                eventView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor),
-                eventView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                eventView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                eventView.widthAnchor.constraint(equalTo: view.widthAnchor)
-            ]
-        )
+        eventView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(topLayoutGuide.snp.bottom)
+            make.bottom.equalTo(bottomLayoutGuide.snp.top)
+            make.width.equalToSuperview()
+        }
         eventView.viewModel = event
     }
 }

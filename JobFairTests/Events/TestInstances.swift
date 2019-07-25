@@ -5,15 +5,19 @@ import EventKit
 extension EventViewModel {
 
     static var testInstance: EventViewModel {
-        return EventViewModel(title: "Test presentation",
-                         description: "presentation description",
-                         lecturerImageUrl: URL(string: "image"),
-                         lecturerDescription: "description",
-                         startDate: Date(),
-                         endDate: Date(),
-                         location: "D1",
-                         company: CompanyViewModel.testInstance,
-                         placeholderImage: #imageLiteral(resourceName: "first"))
+        return EventViewModel(id: "",
+                              title: "Test presentation",
+                              description: "presentation description",
+                              lecturerImageUrl: URL(string: "image"),
+                              lecturerDescription: "description",
+                              startDate: Date(),
+                              endDate: Date(),
+                              location: "D1",
+                              company: CompanyViewModel.testInstance,
+                              placeholderImage: #imageLiteral(resourceName: "first"),
+                              geolocation: Geolocation(latitude: 1, longitude: 1),
+                              type: .presentations,
+                              eventTitle: "")
     }
 }
 

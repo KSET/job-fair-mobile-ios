@@ -1,7 +1,7 @@
-import Foundation
 import UIKit
 
 struct EventViewModel: Equatable {
+    let id: String
     let title: String
     let description: String
     let lecturerImageUrl: URL?
@@ -11,13 +11,36 @@ struct EventViewModel: Equatable {
     let location: String
     let company: CompanyViewModel
     let placeholderImage: UIImage
+    let geolocation: Geolocation
+    let type: EventType
+    let eventTitle: String
+    
+    var progressIndicatorImage: UIImage? {
+        if isInProgress {
+            return UIImage(named: "event_in_progress")
+        }
+
+        if shouldHideCalendarButton {
+            return UIImage(named: "event_past")
+        }
+        
+        return UIImage(named: "event_future")
+    }
+    
+    var isInProgress: Bool {
+        return Date().isBetween(startDate, and: endDate)
+    }
 
     var shouldHideCalendarButton: Bool {
-        return startDate.compare(Date()) == .orderedAscending
+        return startDate < Date()
     }
 
     var startDateString: String {
-        return SharedDateFormatter.shared.presentableString(from: startDate)
+        return SharedDateFormatter.shared.presentableDate(from: startDate)
+    }
+    
+    var startTimeString: String {
+        return SharedDateFormatter.shared.presentableTime(from: startDate)
     }
 
     var endDateString: String {
@@ -29,6 +52,10 @@ struct EventViewModel: Equatable {
         let endTime = SharedDateFormatter.shared.string(from: endDate)
         return startDateString + endTime
     }
+    
+    var shouldShowRateView: Bool {
+        return SessionManager.instance.userRole == .student
+    }
 }
 
 extension EventViewModel {
@@ -38,21 +65,27 @@ extension EventViewModel {
             return nil
         }
         
+        id = event.id
         title = event.title
         description = event.description
         location = event.location
         startDate = event.startDate
         endDate = event.endDate
         company = CompanyViewModel(company: event.company)
+        geolocation = event.geolocation
 
         if let event = event as? Presentation {
             lecturerImageUrl = URL(string: event.lecturerImage)
             lecturerDescription = event.lecturerDescription
             placeholderImage = #imageLiteral(resourceName: "presenter_placeholder")
+            type = .presentations
+            eventTitle = Constants.Companies.presentation
         } else {
             lecturerImageUrl = nil
             lecturerDescription = nil
             placeholderImage = #imageLiteral(resourceName: "placeholder")
+            type = .workshops
+            eventTitle = Constants.Companies.workshop
         }
     }
 }

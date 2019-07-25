@@ -7,7 +7,7 @@ class EventsViewControllerMock: EventsViewController {
     var didShowEvents = false
 
     init() {
-        super.init(eventType: .workshops)
+        super.init(eventType: .workshops, navigationController: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {

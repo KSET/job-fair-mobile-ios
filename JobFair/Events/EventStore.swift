@@ -41,19 +41,27 @@ class EventStore {
         }
         .disposed(by: disposeBag)
     }
+    
+    func rateEvent(eventType: EventType, eventId: String, rating: Double) {
+        let workshopId = eventType == .workshops ? eventId : nil
+        let presentationId = eventType == .presentations ? eventId : nil
+        gateway.rateEvent(workshopId: workshopId, presentationId: presentationId, rating: Int(rating))
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .observeOn(MainScheduler.instance)
+            .subscribe()
+            .disposed(by: disposeBag)
+    }
 
     private func sort(events: [Event]) -> SortedEvents {
         let sortedEvents = events.sorted { $0.startDate < $1.startDate }
 
-        guard let startingDate = sortedEvents.first?.startDate,
-            let secondDay = Calendar.current.date(byAdding: .day, value: 1, to: startingDate) else {
-                return SortedEvents(firstDayEvents: [], secondDayEvents: [], highlightedEvent: nil)
+        guard let startingDate = sortedEvents.first?.startDate else {
+            return SortedEvents(firstDayEvents: [], secondDayEvents: [])
         }
 
         let firstDayEvents = sortedEvents.filter { Calendar.current.isDate(startingDate, inSameDayAs: $0.startDate) }
-        let secondDayEvents = sortedEvents.filter { Calendar.current.isDate(secondDay, inSameDayAs: $0.startDate) }
-        let highlightedEvents = sortedEvents.first { Date().isBetween($0.startDate, and: $0.endDate) }
+        let secondDayEvents =  sortedEvents.filter { !Calendar.current.isDate(startingDate, inSameDayAs: $0.startDate) }
 
-        return SortedEvents(firstDayEvents: firstDayEvents, secondDayEvents: secondDayEvents, highlightedEvent: highlightedEvents)
+        return SortedEvents(firstDayEvents: firstDayEvents, secondDayEvents: secondDayEvents)
     }
 }

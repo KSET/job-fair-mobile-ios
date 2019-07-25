@@ -2,16 +2,12 @@ import UIKit
 
 class CompanyDetailsViewController: UIViewController {
     
-    private var companyDetailsStackView = CompanyDetailsStackView()
-    private var logoScrollViewHeightConstraint: NSLayoutConstraint!
-    private var tableView = UITableView(frame: CGRect.zero, style: .plain)
-    private let companyDetailsTableViewCellIdentifier = "CompanyDetailsTableViewCellIdentifier"
     private var coordinator: CompanyDetailsCoordinator!
-    private var logoScrollView = UIScrollView()
-    private var shadowView = UIView()
-    private var headerStackViewVerticalHeight = CGFloat()
-    private var headerStackViewHorizontalHeight = CGFloat()
-    private let buttonsStackViewHeight: CGFloat = 70
+    private let headerView = HeaderView()
+    private let scrollView = UIScrollView()
+    private let containerView = UIView()
+    private let websiteButton = UIButton.primaryButton
+    private let boothLocationButton = UIButton.primaryButton
     
     let company: CompanyViewModel
     
@@ -26,131 +22,96 @@ class CompanyDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = Constants.Companies.title
         coordinator = CompanyDetailsCoordinator(navigationController: navigationController)
-        headerStackViewVerticalHeight = 0.4 * view.frame.height
-        headerStackViewHorizontalHeight = 0.25 * view.frame.height
         setupUI()
     }
     
     private func setupUI() {
         view.backgroundColor = .white
-        setLogoScrollView()
-        setShadowView()
-        setTableView()
-        setHeaderStackView()
+        setupScrollView()
+        setupHeaderView()
+        setupButtons()
+        addDescriptionViews()
     }
     
-    private func setLogoScrollView() {
-        logoScrollView.backgroundColor = .white
-        logoScrollView.showsVerticalScrollIndicator = false
-        logoScrollView.delegate = self
-        logoScrollView.bounces = false
+    private func setupScrollView() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
+        containerView.addSubview(headerView)
         
-        view.addSubview(logoScrollView)
-        logoScrollView.translatesAutoresizingMaskIntoConstraints = false
-        logoScrollViewHeightConstraint = logoScrollView.heightAnchor.constraint(equalToConstant: headerStackViewVerticalHeight)
-        NSLayoutConstraint.activate([
-            logoScrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
-            logoScrollViewHeightConstraint,
-            logoScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            logoScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-    }
-    
-    private func setShadowView() {
-        shadowView.backgroundColor = .gray
-        view.addSubview(shadowView)
-        shadowView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            shadowView.topAnchor.constraint(equalTo: logoScrollView.bottomAnchor),
-            shadowView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            shadowView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            shadowView.heightAnchor.constraint(equalToConstant: 0.5)
-        ])
-    }
-    
-    private func setTableView() {
-        tableView.separatorStyle = .none
-        
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: .systemPadding),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -.systemPadding),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.topAnchor.constraint(equalTo: shadowView.bottomAnchor)
-        ])
-        
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.showsVerticalScrollIndicator = false
-        tableView.register(CompanyDetailsTableViewCell.self, forCellReuseIdentifier: companyDetailsTableViewCellIdentifier)
-    }
-    
-    private func setHeaderStackView() {
-        companyDetailsStackView.viewModel = company
-        companyDetailsStackView.companyDetailsStackViewDelegate = self
-        
-        logoScrollView.addSubview(companyDetailsStackView)
-        companyDetailsStackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            companyDetailsStackView.topAnchor.constraint(equalTo: logoScrollView.topAnchor),
-            companyDetailsStackView.bottomAnchor.constraint(equalTo: logoScrollView.bottomAnchor),
-            companyDetailsStackView.leadingAnchor.constraint(equalTo: logoScrollView.leadingAnchor),
-            companyDetailsStackView.trailingAnchor.constraint(equalTo: logoScrollView.trailingAnchor),
-            companyDetailsStackView.widthAnchor.constraint(equalTo: logoScrollView.widthAnchor),
-            companyDetailsStackView.heightAnchor.constraint(equalTo: logoScrollView.heightAnchor, constant: 10)
-        ])
-    }
-    
-    private func animateStackView(with axis: UILayoutConstraintAxis) {
-        companyDetailsStackView.animate(with: axis)
-        logoScrollViewHeightConstraint.constant = axis == .horizontal ? headerStackViewHorizontalHeight : headerStackViewVerticalHeight
-        
-        UIView.animate(withDuration: 0.25, animations: {
-            self.view.layoutIfNeeded()
-        })
-    }
-}
-
-extension CompanyDetailsViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return company.companyDetails.count
-    }
-        
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let companyDetailsTableViewCell = tableView.dequeueReusableCell(withIdentifier: companyDetailsTableViewCellIdentifier) as? CompanyDetailsTableViewCell else {
-            return UITableViewCell()
-        }
-       
-        let companyDetail = company.companyDetails[indexPath.row]
-        companyDetailsTableViewCell.configureCell(with: companyDetail.name, and: companyDetail.value)
-        return companyDetailsTableViewCell
-    }
-}
-
-extension CompanyDetailsViewController: UITableViewDelegate {
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let velocity = scrollView.panGestureRecognizer.velocity(in: view)
-        
-        guard velocity.y != 0 else {
-            return
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
-        let axis: UILayoutConstraintAxis = velocity.y < 0 ? .horizontal : .vertical
-        animateStackView(with: axis)
+        containerView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalTo(view)
+        }
     }
-}
-
-extension CompanyDetailsViewController: CompanyDetailsStackViewDelegate {
     
-    func didSelectWebsiteAction() {
+    private func setupHeaderView() {
+        headerView.dateLabel.isHidden = true
+        headerView.timeLabel.isHidden = true
+        headerView.titleLabel.text = company.name
+        headerView.imageView.kf.setImage(with: company.logoUrl)
+        headerView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(CGFloat.systemPadding)
+            make.leading.equalToSuperview().offset(CGFloat.systemPadding)
+            make.trailing.equalToSuperview().offset(-CGFloat.systemPadding)
+            make.height.equalTo(150)
+        }
+    }
+    
+    private func setupButtons() {
+        boothLocationButton.titleLabel?.lineBreakMode = .byTruncatingTail
+        boothLocationButton.titleLabel?.font = .cellTitleMedium
+        boothLocationButton.setTitle("\(Constants.Companies.boothButtonTitle) \(company.boothLocation)", for: .normal)
+        boothLocationButton.addTarget(self, action: #selector(didSelectBoothLocationAction), for: .touchUpInside)
+        websiteButton.titleLabel?.font = .cellTitleMedium
+        websiteButton.setTitle(Constants.Companies.websiteButtonTitle, for: .normal)
+        websiteButton.addTarget(self, action: #selector(didSelectWebsiteAction), for: .touchUpInside)
+        setupButtonStackView()
+    }
+    
+    private func setupButtonStackView() {
+        let stackView = UIStackView(arrangedSubviews: [boothLocationButton, websiteButton])
+        stackView.distribution = .fillEqually
+        stackView.spacing = .systemPadding
+        containerView.addSubview(stackView)
+        
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom).offset(CGFloat.systemPadding * 2)
+            make.leading.trailing.equalTo(headerView)
+            make.height.equalTo(36)
+        }
+    }
+    
+    private func addDescriptionViews() {
+        let views = company.companyDetails.map { details -> ParagraphView in
+            let view = ParagraphView()
+            view.configureView(with: details.name, and: details.value)
+            return view
+        }
+        
+        let stackView = UIStackView(arrangedSubviews: views)
+        stackView.axis = .vertical
+        containerView.addSubview(stackView)
+        
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(boothLocationButton.snp.bottom).offset(CGFloat.systemPadding * 2)
+            make.leading.trailing.equalTo(headerView)
+            make.bottom.equalToSuperview().offset(-CGFloat.systemPadding)
+        }
+    }
+    
+    @objc
+    private func didSelectWebsiteAction() {
         coordinator.didSelectOpenURLAction(websiteUrlString: company.websiteUrlString)
     }
     
-    func didSelectBoothLocationAction() {
+    @objc
+    private func didSelectBoothLocationAction() {
         coordinator.didTapBoothLocationButton(companyId: company.id)
     }
 }

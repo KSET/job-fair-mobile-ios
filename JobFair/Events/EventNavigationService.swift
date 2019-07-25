@@ -23,6 +23,11 @@ class EventNavigationService: BaseNavigationService {
         let jobFairPager = JobFairPageViewController(pager: pagerViewController)
         navigationController?.pushViewController(jobFairPager, animated: true)
     }
+    
+    func showBoothsViewController(at location: Geolocation) {
+        let boothsViewController = BoothsViewController(targetPosition: location.coordinates)
+        navigationController?.pushViewController(boothsViewController, animated: true)
+    }
 
     func showNoCalendarPermissionAlert() {
         let alertViewController = UIAlertController(title: "No permission!", message: "We don't have permission to access your Calendar", preferredStyle: .alert)

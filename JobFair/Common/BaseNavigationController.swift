@@ -5,6 +5,8 @@ class BaseNavigationController: UINavigationController {
     override init(rootViewController: UIViewController) {
         super.init(rootViewController: rootViewController)
         setDefaultNavigationBarAppearance()
+        addBoothsBarItem()
+        addProfileBarItem()
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -16,26 +18,43 @@ class BaseNavigationController: UINavigationController {
     }
     
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        setNavigationBarInfoButton(to: viewController)
+        viewController.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         super.pushViewController(viewController, animated: animated)
     }
     
-    override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        setNavigationBarInfoButton(to: viewControllerToPresent)
-        super.present(viewControllerToPresent, animated: flag, completion: completion)
+    private func addBoothsBarItem() {
+        let boothBarItem = UIBarButtonItem(title: Constants.Map.title, style: .plain, target: self, action: #selector(didTapBoothsBarButton))
+        viewControllers.first?.navigationItem.leftBarButtonItem = boothBarItem
     }
     
-    func setNavigationBarInfoButton(to viewController: UIViewController) {
-        let infoButton = UIButton(type: .infoDark)
-        infoButton.addTarget(self, action: #selector(presentInfoViewController), for: .touchUpInside)
-        let infoBarButton = UIBarButtonItem(customView: infoButton)
-        infoBarButton.tintColor = .gray
-        viewController.navigationItem.rightBarButtonItem = infoBarButton
+    private func addProfileBarItem() {
+        let profileImage = UIImage(named: "profile")
+        let profileBarItem = UIBarButtonItem(image: profileImage, style: .plain, target: self, action: #selector(didTapProfileButton))
+        viewControllers.first?.navigationItem.rightBarButtonItem = profileBarItem
     }
     
-    @objc func presentInfoViewController() {
-        let infoViewController = InfoViewController()
-        let infoNavigationController = UINavigationController(rootViewController: infoViewController)
-        super.present(infoNavigationController, animated: true, completion: nil)
+    @objc
+    private func didTapProfileButton() {
+        let accountViewController = AccountContainerViewController()
+        let navigationController = BaseNavigationController(rootViewController: accountViewController)
+        addCloseButton(to: accountViewController)
+        present(navigationController, animated: true, completion: nil)
+    }
+    
+    @objc
+    private func didTapBoothsBarButton() {
+        let boothsViewController = BoothsViewController()
+        let navigationController = BaseNavigationController(rootViewController: boothsViewController)
+        addCloseButton(to: boothsViewController)
+        present(navigationController, animated: true, completion: nil)
+    }
+    
+    private func addCloseButton(to viewController: UIViewController) {
+        let closeBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "close"), style: .plain, target: self, action: #selector(didTapCloseButton))
+        viewController.navigationItem.leftBarButtonItem = closeBarButtonItem
+    }
+    
+    @objc func didTapCloseButton() {
+        dismiss(animated: true, completion: nil)
     }
 }
