@@ -17,6 +17,7 @@ class EventGatewayMock: EventGateway {
                                              startDate: Date(),
                                              endDate: Date().addingTimeInterval(50),
                                              location: "location",
+                                             geolocation: Geolocation(latitude: 1, longitude: 1),
                                              company: Company.testInstance)
         let secondPresentation = Presentation(id: "2",
                                               title: "second event",
@@ -26,6 +27,7 @@ class EventGatewayMock: EventGateway {
                                               startDate: Date().addingTimeInterval(500),
                                               endDate: Date().addingTimeInterval(500),
                                               location: "location",
+                                              geolocation: Geolocation(latitude: 1, longitude: 1),
                                               company: Company.testInstance)
 
         return [firstPresentation, secondPresentation]
@@ -41,6 +43,7 @@ class EventGatewayMock: EventGateway {
                                              startDate: tommorow,
                                              endDate: tommorow,
                                              location: "location",
+                                             geolocation: Geolocation(latitude: 1, longitude: 1),
                                              company: Company.testInstance)
         let secondPresentation = Presentation(id: "7",
                                               title: "second event",
@@ -50,6 +53,7 @@ class EventGatewayMock: EventGateway {
                                               startDate: tommorow.addingTimeInterval(50),
                                               endDate: tommorow.addingTimeInterval(50),
                                               location: "location",
+                                              geolocation: Geolocation(latitude: 1, longitude: 1),
                                               company: Company.testInstance)
         return [firstPresentation, secondPresentation]
     }()
@@ -61,6 +65,7 @@ class EventGatewayMock: EventGateway {
                                      startDate: Date(),
                                      endDate: Date().addingTimeInterval(50),
                                      location: "location",
+                                     geolocation: Geolocation(latitude: 1, longitude: 1),
                                      company: Company.testInstance)
         let secondWorkshop = Workshop(id: "2",
                                       title: "second event",
@@ -68,6 +73,7 @@ class EventGatewayMock: EventGateway {
                                       startDate: Date().addingTimeInterval(500),
                                       endDate: Date().addingTimeInterval(500),
                                       location: "location",
+                                      geolocation: Geolocation(latitude: 1, longitude: 1),
                                       company: Company.testInstance)
 
         return [firstWorkshop, secondWorkshop]
@@ -81,6 +87,7 @@ class EventGatewayMock: EventGateway {
                                      startDate: tommorow,
                                      endDate: tommorow,
                                      location: "location",
+                                     geolocation: Geolocation(latitude: 1, longitude: 1),
                                      company: Company.testInstance)
         let secondWorkshop = Workshop(id: "7",
                                       title: "second event",
@@ -88,6 +95,7 @@ class EventGatewayMock: EventGateway {
                                       startDate: tommorow.addingTimeInterval(50),
                                       endDate: tommorow.addingTimeInterval(50),
                                       location: "location",
+                                      geolocation: Geolocation(latitude: 1, longitude: 1),
                                       company: Company.testInstance)
         return [firstWorkshop, secondWorkshop]
     }()

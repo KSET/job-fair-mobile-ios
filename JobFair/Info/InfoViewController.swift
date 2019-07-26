@@ -1,19 +1,19 @@
 import UIKit
 
 enum InfoCellType: Int {
-    case stream = 2
-    case social = 3
-    case location = 5
+    case stream = 0
+    case social = 5
+    case location = 4
 }
 
 class InfoViewController: UIViewController {
+    
     var info = [InfoViewModel]() {
         didSet {
             tableView.reloadData()
         }
     }
     
-    private let socialCellHeight: CGFloat = 216
     private let tableFooterViewHeight: CGFloat = 100
     private let tableView = UITableView(frame: CGRect.zero, style: .grouped)
     private let infoDescriptionTableViewCellIdentifier = "InfoDescriptionTableViewCellIdentifier"
@@ -23,36 +23,20 @@ class InfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigationBar()
+        title = Constants.Social.title
         setTableView()
         coordinator = InfoCoordinator(viewController: self)
         coordinator?.viewDidLoad()
     }
     
-    private func setNavigationBar() {
-        navigationController?.navigationBar.barTintColor = .brandColor
-        navigationController?.navigationBar.isTranslucent = false
-        setCloseBarButtonItem()
-        setShareBarButton()
-    }
-    
-    private func setCloseBarButtonItem() {
-        let closeBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "close").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(didTapCloseButton))
-        navigationItem.leftBarButtonItem = closeBarButtonItem
-    }
-    
-    private func setShareBarButton() {
-        let shareBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "share").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(didTapShareButton))
-        navigationItem.rightBarButtonItem = shareBarButtonItem
-    }
-    
-    private func createHeaderView() -> UIImageView {
-        let headerImageView = UIImageView(image: #imageLiteral(resourceName: "launch_image"))
-        headerImageView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height * 0.25)
-        headerImageView.backgroundColor = .brandColor
+    private func createHeaderView() -> UIView {
+        let containerView = UIView(frame: .init(x: 0, y: 0, width: view.frame.width, height: 116))
+        let headerImageView = UIImageView(image: UIImage(named: "login_logo"))
         headerImageView.contentMode = .scaleAspectFit
         headerImageView.clipsToBounds = true
-        return headerImageView
+        containerView.addSubview(headerImageView)
+        headerImageView.pinAllEdges(to: containerView, padding: 24)
+        return containerView
     }
     
     private func setTableView() {
@@ -65,17 +49,14 @@ class InfoViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .none
-        tableView.bounces = false
+        tableView.backgroundColor = .white
+        tableView.estimatedRowHeight = 120
         
         let footerView = UndabotStackView(frame: CGRect(x: 0, y: 0, width: 0, height: tableFooterViewHeight), tapHandler: { [weak self] in
             self?.coordinator?.didSelectUndabotWebsiteAction()
         })
         tableView.tableFooterView = footerView
         tableView.tableHeaderView = createHeaderView()
-    }
-    
-    @objc private func didTapCloseButton() {
-        coordinator?.didSelectDismissAction()
     }
     
     @objc private func didTapShareButton() {
@@ -112,15 +93,6 @@ extension InfoViewController: UITableViewDataSource {
             }
             infoDescriptionTableViewCell.viewModel = info[indexPath.row]
             return infoDescriptionTableViewCell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch indexPath.row {
-        case InfoCellType.social.rawValue:
-            return socialCellHeight
-        default:
-            return UITableViewAutomaticDimension
         }
     }
 }

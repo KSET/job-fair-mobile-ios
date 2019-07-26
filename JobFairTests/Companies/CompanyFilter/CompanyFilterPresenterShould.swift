@@ -10,7 +10,7 @@ class CompanyFilterPresenterShould: QuickSpec {
 
         beforeEach {
             let companyFilterViewControllerDelegate = CompanyListViewController()
-            viewController = CompanyFilterViewControllerMock(companyFilterViewControllerDelegate: companyFilterViewControllerDelegate as? CompanyFilterViewControllerDelegate,
+            viewController = CompanyFilterViewControllerMock(delegate: companyFilterViewControllerDelegate,
                                                              currentIndustryId: Constants.Common.defaultId)
             sut = CompanyFilterPresenter(viewController: viewController)
         }

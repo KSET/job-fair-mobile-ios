@@ -16,6 +16,16 @@ class SharedDateFormatter: DateFormatter {
         dateFormat = "dd.MM. HH:mm"
         return super.string(from: date)
     }
+    
+    func presentableDate(from date: Date) -> String {
+        dateFormat = "MMM d, yyyy"
+        return super.string(from: date)
+    }
+    
+    func presentableTime(from date: Date) -> String {
+        dateFormat = "HH:mm"
+        return super.string(from: date)
+    }
 
     override func date(from string: String) -> Date? {
         dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"

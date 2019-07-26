@@ -15,7 +15,7 @@ class CompanyFilterUseCaseShould: QuickSpec {
             gateway = CompanyGatewayMock()
             sut = CompanyFilterUseCase(gateway: gateway)
             let companyFilterViewControllerDelegate = CompanyListViewController()
-            viewController = CompanyFilterViewController(companyFilterViewControllerDelegate: companyFilterViewControllerDelegate as? CompanyFilterViewControllerDelegate,
+            viewController = CompanyFilterViewController(delegate: companyFilterViewControllerDelegate,
                                                          currentIndustryId: "1")
             presenter = CompanyFilterPresenterMock(viewController: viewController)
         }

@@ -15,10 +15,6 @@ class CompaniesNavigationServiceMock: CompanyNavigationService {
         didDismiss = true
     }
     
-    override func navigateToCompanyFilter(companyFilterViewControllerDelegate: CompanyFilterViewControllerDelegate, currentIndustryId: String) {
-        didNavigateToCompanyFilter = true
-    }
-    
     override func navigateToCompanyDetails(at index: Int, companies: [CompanyViewModel]) {
         didNavigateToCompanyDetails = true
     }

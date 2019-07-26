@@ -4,6 +4,7 @@ import UIKit
 protocol Swipeable {
     var hasNext: Bool { get }
     var hasPrevious: Bool { get }
+    var rightNavigationItem: UIBarButtonItem? { get }
     func showNextPage()
     func showPreviousPage()
 }
@@ -14,8 +15,8 @@ class JobFairPageViewController: UIViewController {
     private let pager: SwipeablePager
     private let buttonStackView = UIStackView()
     private let buttonStackViewSeparator = UIView()
-    private let previousButton = UIButton(type: .system)
-    private let nextButton = UIButton(type: .system)
+    private let previousButton = UIButton()
+    private let nextButton = UIButton()
 
     init(pager: SwipeablePager) {
         self.pager = pager
@@ -29,7 +30,9 @@ class JobFairPageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = pager.title
         view.backgroundColor = .white
+        navigationItem.rightBarButtonItem = pager.rightNavigationItem
         setButtonStackView()
         addSubviews()
         setNextButton()
@@ -38,21 +41,39 @@ class JobFairPageViewController: UIViewController {
     }
 
     private func setPreviousButton() {
-        previousButton.setTitle("Previous", for: .normal)
-        previousButton.titleLabel?.textAlignment = .left
+        previousButton.setTitle(Constants.Common.previousPagerTitle, for: .normal)
+        previousButton.setTitleColor(.black, for: .normal)
+        previousButton.setTitleColor(.secondaryColor, for: .disabled)
+        previousButton.titleLabel?.textAlignment = .center
+        previousButton.titleLabel?.font = .titleRegular
         previousButton.addTarget(self, action: #selector(didTapPreviousButton), for: .touchUpInside)
     }
 
     private func setNextButton() {
-        nextButton.setTitle("Next", for: .normal)
-        nextButton.titleLabel?.textAlignment = .right
+        nextButton.setTitle(Constants.Common.nextPagerTitle, for: .normal)
+        nextButton.setTitleColor(.black, for: .normal)
+        nextButton.setTitleColor(.secondaryColor, for: .disabled)
+        nextButton.titleLabel?.font = .titleRegular
+        nextButton.titleLabel?.textAlignment = .center
         nextButton.addTarget(self, action: #selector(didTapNextButton), for: .touchUpInside)
     }
 
     private func setButtonStackView() {
         buttonStackView.addArrangedSubview(previousButton)
         buttonStackView.addArrangedSubview(nextButton)
-        buttonStackView.distribution = .equalSpacing
+        buttonStackView.distribution = .fillEqually
+        setupButtonSeparatorView()
+    }
+    
+    private func setupButtonSeparatorView() {
+        let separatorView = UIView()
+        buttonStackView.addSubview(separatorView)
+        separatorView.backgroundColor = .borderColor
+        separatorView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.height.equalToSuperview().offset(-CGFloat.systemPadding)
+            make.width.equalTo(0.5)
+        }
     }
 
     private func addSubviews() {

@@ -1,0 +1,8 @@
+mutation StudentReview($input: CompanyResumeReviewInput!) {
+    company_resume_review(input: $input) {
+        data {
+            id
+        }
+    }
+}
+

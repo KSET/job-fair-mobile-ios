@@ -8,8 +8,6 @@ class NewsListViewController: UIViewController {
     fileprivate let NewsListTableViewCellIdentifier = "NewsListTableViewCellIdentifier"
     fileprivate let FeaturedNewsListTableViewCellIdentifier = "FeaturedNewsListTableViewCellIdentifier"
     
-    fileprivate let featuredNewsListCellHeight: CGFloat = 250
-    
     var news: [NewsViewModel] = [NewsViewModel]() {
         didSet {
             removeLoadingView()
@@ -37,6 +35,7 @@ class NewsListViewController: UIViewController {
         tableView.register(FeaturedNewsListTableViewCell.self, forCellReuseIdentifier: FeaturedNewsListTableViewCellIdentifier)
         tableView.register(NewsListTableViewCell.self, forCellReuseIdentifier: NewsListTableViewCellIdentifier)
         tableView.separatorStyle = .none
+        tableView.estimatedRowHeight = 140
     }
     
     private func setRefreshControl() {
@@ -76,10 +75,6 @@ extension NewsListViewController: UITableViewDataSource {
             return cell
         }
         return UITableViewCell()
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return indexPath.row == 0 ? featuredNewsListCellHeight : UITableViewAutomaticDimension
     }
 }
 

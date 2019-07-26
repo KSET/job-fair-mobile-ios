@@ -1,0 +1,5 @@
+mutation RateEvent($input: EventReviewInput!) {
+    event_review(input: $input) {
+        clientMutationId
+    }
+}

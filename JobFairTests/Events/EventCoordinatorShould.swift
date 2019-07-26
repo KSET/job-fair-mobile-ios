@@ -15,7 +15,7 @@ class EventCoordinatorShould: QuickSpec {
             navigationService = EventNavigationServiceMock(navigationController: nil)
             eventCreator = EventCreatorMock()
             eventStore = EventStoreMock()
-            sut = EventCoordinator(viewController: EventsViewController(eventType: .workshops))
+            sut = EventCoordinator(viewController: EventsViewController(eventType: .workshops, navigationController: nil), navigationController: nil)
             sut.eventStore = eventStore
             sut.eventCreator = eventCreator
             sut.navigationService = navigationService

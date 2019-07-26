@@ -13,7 +13,7 @@ class BoothMarker: GMSMarker {
     }
 
     private func setMarker(with booth: BoothViewModel) {
-        position = booth.geolocation
+        position = booth.geolocation.coordinates
         logoImageView.kf.setImage(with: booth.company.logoUrl, placeholder: #imageLiteral(resourceName: "placeholder"))
 
         title = booth.company.name

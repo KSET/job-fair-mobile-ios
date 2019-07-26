@@ -17,6 +17,7 @@ class EventViewModelShould: QuickSpec {
                                                     startDate: Date(),
                                                     endDate: Date().addingTimeInterval(321),
                                                     location: "D1",
+                                                    geolocation: Geolocation(latitude: 1, longitude: 1),
                                                     company: Company.testInstance)
 
                     let viewModel = EventViewModel(event: presentation)
@@ -29,7 +30,7 @@ class EventViewModelShould: QuickSpec {
                     expect(viewModel?.startDate) == presentation.startDate
                     expect(viewModel?.endDate) == presentation.endDate
                     expect(viewModel?.company.logoUrl?.absoluteString) == presentation.company.logoUrlString
-                    expect(viewModel?.startDateString) == SharedDateFormatter.shared.presentableString(from: presentation.startDate)
+                    expect(viewModel?.startTimeString) == SharedDateFormatter.shared.presentableTime(from: presentation.startDate)
                     expect(viewModel?.endDateString) == SharedDateFormatter.shared.presentableString(from: presentation.endDate)
                 }
             }
@@ -42,6 +43,7 @@ class EventViewModelShould: QuickSpec {
                                             startDate: Date(),
                                             endDate: Date().addingTimeInterval(321),
                                             location: "D1",
+                                            geolocation: Geolocation(latitude: 1, longitude: 1),
                                             company: Company.testInstance)
                     let viewModel = EventViewModel(event: workshop)
 
@@ -51,7 +53,7 @@ class EventViewModelShould: QuickSpec {
                     expect(viewModel?.startDate) == workshop.startDate
                     expect(viewModel?.endDate) == workshop.endDate
                     expect(viewModel?.company.logoUrl?.absoluteString) == workshop.company.logoUrlString
-                    expect(viewModel?.startDateString) == SharedDateFormatter.shared.presentableString(from: workshop.startDate)
+                    expect(viewModel?.startTimeString) == SharedDateFormatter.shared.presentableTime(from: workshop.startDate)
                     expect(viewModel?.endDateString) == SharedDateFormatter.shared.presentableString(from: workshop.endDate)
                 }
             }

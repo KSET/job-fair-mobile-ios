@@ -4,14 +4,15 @@ extension UINavigationController {
     
     func setDefaultNavigationBarAppearance() {
         navigationBar.setBackgroundImage(nil, for: .default)
-        navigationBar.shadowImage = nil
+        navigationBar.shadowImage = UIImage()
         navigationBar.isTranslucent = false
         view.backgroundColor = nil
-        navigationBar.backgroundColor = .brandColor
-        navigationBar.tintColor = .white
-        navigationBar.barTintColor = .brandColor
-        navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-        UIApplication.shared.statusBarView?.backgroundColor = .brandColor
+        navigationBar.tintColor = .black
+        navigationBar.barTintColor = .white
+        UIBarButtonItem.appearance().setTitleTextAttributes([.font: UIFont.cellTitleMedium],
+                                    for: .normal)
+        navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black,
+                                             .font: UIFont.titleMedium]
     }
     
     func setClearNavigationBar() {
@@ -20,6 +21,6 @@ extension UINavigationController {
         navigationBar.isTranslucent = true
         view.backgroundColor = UIColor.clear
         navigationBar.backgroundColor = UIColor.clear
-        navigationBar.tintColor = .white
+        navigationBar.tintColor = .brandColor
     }
 }

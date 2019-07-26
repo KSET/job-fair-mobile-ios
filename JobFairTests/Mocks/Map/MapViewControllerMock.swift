@@ -1,7 +1,7 @@
 import Foundation
 @testable import JobFair
 
-class MapViewControllerMock: MapViewController {
+class MapViewControllerMock: BoothsViewController {
     var didShowError = false
     var didShowBooths = false
 

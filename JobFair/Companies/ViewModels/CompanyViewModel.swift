@@ -16,8 +16,8 @@ struct CompanyViewModel: Equatable {
     
     var companyDetails: [CompanyDetail] {
         var details = [
-            CompanyDetail(name: Constants.Companies.industry, value: industry.name),
-            CompanyDetail(name: Constants.Companies.description, value: description)
+            CompanyDetail(name: Constants.Companies.description, value: description),
+            CompanyDetail(name: Constants.Companies.industry, value: industry.name)
         ]
         
         if let presentationTime = presentationTime,

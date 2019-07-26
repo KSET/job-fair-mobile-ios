@@ -11,6 +11,7 @@ class CompanyPagerViewController: UIPageViewController {
         self.companies = companies
         self.companyIndex = companyIndex
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        title = Constants.Companies.title
     }
     
     required init?(coder: NSCoder) {
@@ -66,6 +67,10 @@ extension CompanyPagerViewController: UIPageViewControllerDataSource {
 }
 
 extension CompanyPagerViewController: Swipeable {
+    
+    var rightNavigationItem: UIBarButtonItem? {
+        return nil
+    }
 
     func showNextPage() {
         guard let currentViewController = viewControllers?.first,

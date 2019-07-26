@@ -9,6 +9,7 @@ class NewsDetailPagerViewController: UIPageViewController {
         self.selectedIndex = selectedIndex
         self.news = news
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        title = Constants.News.title
     }
     
     required init?(coder: NSCoder) {
@@ -18,10 +19,8 @@ class NewsDetailPagerViewController: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         coordinator = NewsDetailsCoordinator(viewController: self)
-        
-        self.dataSource = self
+        dataSource = self
         view.backgroundColor = .white
-        setNavigationBarShareButton()
         setPages()
     }
     
@@ -33,11 +32,6 @@ class NewsDetailPagerViewController: UIPageViewController {
     private func setPages() {
         let initialNewsDetailsViewController = NewsDetailsViewController(news: news[selectedIndex])
         setViewControllers([initialNewsDetailsViewController], direction: .forward, animated: true, completion: nil)
-    }
-    
-    private func setNavigationBarShareButton() {
-        let shareBarButton = UIBarButtonItem(image: #imageLiteral(resourceName: "share"), style: .plain, target: self, action: #selector(shareButtonClicked))
-        parent?.navigationItem.rightBarButtonItem = shareBarButton
     }
     
     @objc private func shareButtonClicked() {
@@ -77,6 +71,10 @@ extension NewsDetailPagerViewController: UIPageViewControllerDataSource {
 }
 
 extension NewsDetailPagerViewController: Swipeable {
+    
+    var rightNavigationItem: UIBarButtonItem? {
+        return UIBarButtonItem(image: #imageLiteral(resourceName: "share"), style: .plain, target: self, action: #selector(shareButtonClicked))
+    }
 
     func showNextPage() {
         guard let currentViewController = viewControllers?.first,

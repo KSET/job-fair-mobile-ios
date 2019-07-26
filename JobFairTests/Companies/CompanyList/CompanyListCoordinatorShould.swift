@@ -24,13 +24,7 @@ class CompanyListCoordinatorShould: QuickSpec {
             sut = nil
             store = nil
         }
-        
-        describe("didSelectFilterAction(industryId: String)") {
-            it("should tell navigation service to open IndustryFilter modal") {
-                sut.didSelectFilterAction(with: "")
-                expect(navigationService.didNavigateToCompanyFilter) == true
-            }
-        }
+
         
         describe("didSelectCompany(_ companies: [CompanyViewModel], index: Int)") {
             it("should tell navigation service to open CompanyDetails") {

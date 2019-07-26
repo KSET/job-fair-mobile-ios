@@ -1,77 +1,86 @@
 import UIKit
 
-enum CellType {
-    case company
-    case social
-}
-
 class LogoAndNameCollectionViewCell: UICollectionViewCell {
-    private let nameLabelPadding: CGFloat = 8
+    
+    let containerView = UIView()
     private let logoImageView = UIImageView()
     private let nameLabel = UILabel()
-    private let socialLogoHeight: CGFloat = 24
-    private let companyLogoHeightMultiplier: CGFloat = 0.7
-    private var cellType: CellType?
-    private var stackView = UIStackView()
+    private let separatorView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupConstraints()
+        backgroundColor = .white
+        commonInit()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with name: String, logoImage: UIImage?, logoImageUrl: URL?, cellType: CellType?) {
-        self.cellType = cellType
-        backgroundColor = .white
-        setStackView(with: name, logoImage: logoImage, logoImageUrl: logoImageUrl)
-    }
-    
-    private func setupConstraints() {
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stackView)
-        NSLayoutConstraint.activate([
-                stackView.topAnchor.constraint(equalTo: topAnchor),
-                stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-                stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .systemPadding),
-                stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding)
-        ])
-    }
-    
-    private func setStackView(with name: String, logoImage: UIImage?, logoImageUrl: URL?) {
-        setLogoImageView(with: logoImage, logoImageUrl: logoImageUrl)
-        setNameLabel(with: name)
-        
-        stackView.addArrangedSubview(logoImageView)
-        stackView.addArrangedSubview(nameLabel)
-        
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 0
-        stackView.axis = .vertical
-        
-        let logoHeightConstraint = cellType == .company
-            ? logoImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: companyLogoHeightMultiplier)
-            : logoImageView.heightAnchor.constraint(equalToConstant: socialLogoHeight)
-        
-        logoHeightConstraint.isActive = true
-    }
-    
-    private func setLogoImageView(with logoImage: UIImage?, logoImageUrl: URL?) {
-        if let logoImage = logoImage {
-            logoImageView.image = logoImage
-        } else {
-            logoImageView.kf.setImage(with: logoImageUrl, placeholder: #imageLiteral(resourceName: "placeholder"))
-        }
-        logoImageView.contentMode = .scaleAspectFit
-    }
-    
-    private func setNameLabel(with name: String) {
+    func configure(with name: String, logoImageUrl: URL?) {
+        logoImageView.kf.setImage(with: logoImageUrl, placeholder: #imageLiteral(resourceName: "placeholder"))
         nameLabel.text = name
-        nameLabel.textAlignment = .center
+    }
+    
+    private func commonInit() {
+        backgroundColor = .white
+        contentView.backgroundColor = .white
+        setupContainerView()
+        setupNameLabel()
+        setupSeparatorView()
+        setupLogoImageView()
+    }
+    
+    private func setupContainerView() {
+        contentView.addSubview(containerView)
+        containerView.pinAllEdges(to: self)
+        contentView.addBorder()
+        contentView.addShadow()
+        contentView.addCornerRadius()
+    }
+    
+    private func setupNameLabel() {
+        containerView.addSubview(nameLabel)
+        nameLabel.textAlignment = .left
         nameLabel.numberOfLines = 0
-        nameLabel.font = .titleRegular
+        nameLabel.font = .cellTitleMedium
         nameLabel.adjustsFontSizeToFitWidth = true
+        nameLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(
+            [
+                nameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: .systemPadding),
+                nameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -.systemPadding),
+                nameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: .smallPadding)
+            ]
+        )
+    }
+    
+    private func setupSeparatorView() {
+        addSubview(separatorView)
+        separatorView.backgroundColor = .borderColor
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(
+            [
+                separatorView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: .smallPadding),
+                separatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                separatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                separatorView.heightAnchor.constraint(equalToConstant: 0.5)
+            ]
+        )
+    }
+    
+    private func setupLogoImageView() {
+        addSubview(logoImageView)
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(
+            [
+                logoImageView.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: .systemPadding),
+                logoImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: .systemPadding),
+                logoImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -.systemPadding),
+                logoImageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -.systemPadding)
+            ]
+        )
     }
 }

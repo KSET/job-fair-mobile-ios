@@ -21,10 +21,6 @@ class CompanyListCoordinator {
         store.showCompanies(for: industryId, presenter: presenter)
     }
     
-    func didSelectFilterAction(with currentIndustryId: String) {
-        navigationService.navigateToCompanyFilter(companyFilterViewControllerDelegate: self, currentIndustryId: currentIndustryId)
-    }
-    
     func didSelectCompany(_ companies: [CompanyViewModel], index: Int) {
         navigationService.navigateToCompanyDetails(at: index, companies: companies)
     }
@@ -34,9 +30,6 @@ class CompanyListCoordinator {
             self?.viewDidLoad(industryId: industryId)
         }
     }
-}
-
-extension CompanyListCoordinator: CompanyFilterViewControllerDelegate {
     
     func didSelectIndustry(_ industryId: String) {
         store.showCompanies(for: industryId, presenter: presenter)

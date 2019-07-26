@@ -1,137 +1,205 @@
 import UIKit
 import Kingfisher
+import Cosmos
 
-protocol EventViewDelegate: CalendarButtonDelegate {
+protocol EventViewDelegate: class {
+    func didTapEventLocationButton(for location: Geolocation)
     func didTapCompanyButton(for company: CompanyViewModel)
+    func didTapCalendarButton(for event: EventViewModel)
+    func didTapRateView(for event: EventViewModel, rating: Double)
 }
 
 class EventView: UIScrollView {
 
-    private let mainStackView = UIStackView()
-    private let headerView = EventHeaderView()
-    private let lecturerHeaderLabel = UILabel()
-    private let lecturerStackView = UIStackView()
-    private let lecturerDescriptionLabel = UILabel()
-    private let lecturerImageView = UIImageView()
-    private let eventDescriptionLabel = UILabel()
-    private let companyButton = UIButton(type: .custom)
-    private let lecturerImageViewHeight: CGFloat = 40
-    private let padding: CGFloat = 32
-    private let minCompanyButtonHeight: CGFloat = 40
+    private let contentView = UIView()
+    private let titleHeaderLabel = UILabel()
+    private let titleLabel = UILabel()
+    private let headerView = HeaderView()
+    private let companyDetailsButton = UIButton.primaryButton
+    private let eventLocationButton = UIButton.primaryButton
+    private let descriptionView = ParagraphView()
+    private let presenterBioView = ParagraphView()
+    private let rateHeaderLabel = UILabel()
+    private let rateView = CosmosView()
     
-    weak var viewDelegate: EventViewDelegate? {
-        didSet {
-            headerView.delegate = viewDelegate
-        }
-    }
+    weak var viewDelegate: EventViewDelegate?
 
     var viewModel: EventViewModel? {
         didSet {
-            headerView.viewModel = viewModel
-            eventDescriptionLabel.text = viewModel?.description
-
-            lecturerImageView.kf.setImage(with: viewModel?.lecturerImageUrl, placeholder: #imageLiteral(resourceName: "presenter_placeholder"))
-            lecturerDescriptionLabel.text = viewModel?.lecturerDescription
-            lecturerStackView.isHidden = viewModel?.lecturerDescription == nil
-            lecturerHeaderLabel.isHidden = viewModel?.lecturerDescription == nil
-            let buttonTitle = String(format: Constants.Events.moreAboutCompany, viewModel?.company.name.uppercased() ?? "")
-            companyButton.setTitle(buttonTitle, for: .normal)
-            setCompanyButtonSize()
+            titleHeaderLabel.text = viewModel?.eventTitle.uppercased()
+            titleLabel.text = viewModel?.title
+            headerView.dateLabel.text = viewModel?.startDateString
+            headerView.timeLabel.text = viewModel?.startTimeString
+            descriptionView.configureView(with: Constants.Events.descriptionHeader, and: viewModel?.description)
+            presenterBioView.configureView(with: Constants.Events.biographyHeader, and: viewModel?.lecturerDescription)
+            eventLocationButton.setTitle("\(Constants.Events.eventLocationButtonTitle) \(viewModel?.location ?? "")", for: .normal)
+            
+            let imageUrl = viewModel?.lecturerImageUrl ?? viewModel?.company.logoUrl
+            headerView.imageView.kf.setImage(with: imageUrl)
+            hideRateViewIfNeeded()
         }
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setView()
+        commonInit()
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setView() {
-        eventDescriptionLabel.numberOfLines = 0
-        eventDescriptionLabel.textColor = .darkGray
-        eventDescriptionLabel.setLineSpacing(lineSpacing: 1.2)
-        setLecturerStackView()
-        setMainStackView()
-        setCompanyButton()
-        createConstraints()
+    private func commonInit() {
+        setupContentView()
+        setupTitleHeaderLabel()
+        setupTitleLabel()
+        setupHeaderView()
+        setupButtons()
+        setupRateHeaderLabel()
+        setupRateView()
+        setupDescriptionView()
+        setupPresenterBioView()
     }
     
-    private func setLecturerStackView() {
-        lecturerHeaderLabel.text = Constants.Events.presenter
-        lecturerHeaderLabel.font = .systemFont(ofSize: 17, weight: .semibold)
-        lecturerDescriptionLabel.numberOfLines = 0
-        lecturerDescriptionLabel.textColor = .darkGray
-        lecturerImageView.translatesAutoresizingMaskIntoConstraints = false
-        lecturerImageView.contentMode = .scaleAspectFit
-        lecturerImageView.clipsToBounds = true
-        lecturerImageView.layer.cornerRadius = 2
-        lecturerStackView.addArrangedSubview(lecturerImageView)
-        lecturerStackView.addArrangedSubview(lecturerDescriptionLabel)
-        lecturerStackView.alignment = .top
-        lecturerStackView.spacing = .systemPadding
-    }
-
-    private func setCompanyButton() {
-        companyButton.layer.cornerRadius = 4
-        companyButton.layer.borderColor = UIColor.brandColor.cgColor
-        companyButton.layer.borderWidth = 1
-        companyButton.titleLabel?.numberOfLines = 0
-        companyButton.titleLabel?.textAlignment = .center
-        companyButton.clipsToBounds = true
-        companyButton.setTitleColor(.brandColor, for: .normal)
-        companyButton.addTarget(self, action: #selector(didTapCompanyButton), for: .touchUpInside)
-    }
-
-    fileprivate func setMainStackView() {
-        mainStackView.addArrangedSubview(headerView)
-        mainStackView.addArrangedSubview(eventDescriptionLabel)
-        mainStackView.addArrangedSubview(lecturerHeaderLabel)
-        mainStackView.addArrangedSubview(lecturerStackView)
-        mainStackView.axis = .vertical  
-        mainStackView.spacing = 24
-        mainStackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(mainStackView)
-        addSubview(companyButton)
-        createConstraints()
+    private func setupContentView() {
+        addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
     }
     
-    fileprivate func createConstraints() {
-        companyButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate(
-            [
-                mainStackView.topAnchor.constraint(equalTo: topAnchor),
-                mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .systemPadding),
-                mainStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.systemPadding),
-                mainStackView.widthAnchor.constraint(equalTo: widthAnchor, constant: -padding),
-                lecturerImageView.heightAnchor.constraint(equalToConstant: lecturerImageViewHeight),
-                lecturerImageView.widthAnchor.constraint(equalToConstant: lecturerImageViewHeight),
-                companyButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding),
-                companyButton.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: .systemPadding),
-                companyButton.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -.systemPadding),
-                companyButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-                companyButton.topAnchor.constraint(equalTo: mainStackView.bottomAnchor, constant: padding)
-            ]
-        )
+    private func setupTitleHeaderLabel() {
+        titleHeaderLabel.font = .headerTitle
+        titleHeaderLabel.textColor = .secondaryColor
+        contentView.addSubview(titleHeaderLabel)
+        titleHeaderLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(CGFloat.systemPadding)
+            make.leading.equalToSuperview().offset(CGFloat.systemPadding)
+            make.trailing.equalToSuperview().offset(-CGFloat.systemPadding)
+        }
     }
-
-    private func setCompanyButtonSize() {
-        guard let titleLabel = companyButton.titleLabel else {
+    
+    private func setupTitleLabel() {
+        titleLabel.font = .titleLarge
+        titleLabel.textColor = .black
+        titleLabel.numberOfLines = 0
+        contentView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleHeaderLabel.snp.bottom).offset(CGFloat.smallPadding)
+            make.leading.equalToSuperview().offset(CGFloat.systemPadding)
+            make.trailing.equalToSuperview().offset(-CGFloat.systemPadding)
+        }
+    }
+    
+    private func setupHeaderView() {
+        headerView.titleLabel.isHidden = true
+        contentView.addSubview(headerView)
+        headerView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(CGFloat.systemPadding)
+            make.height.equalTo(150)
+            make.leading.equalToSuperview().offset(CGFloat.systemPadding)
+            make.trailing.equalToSuperview().offset(-CGFloat.systemPadding)
+        }
+    }
+    
+    private func setupButtons() {
+        setupButtonStackView()
+        eventLocationButton.titleLabel?.lineBreakMode = .byTruncatingTail
+        eventLocationButton.titleLabel?.font = .cellTitleMedium
+        eventLocationButton.addTarget(self, action: #selector(didTapEventLocationButton), for: .touchUpInside)
+        companyDetailsButton.titleLabel?.font = .cellTitleMedium
+        companyDetailsButton.setTitle(Constants.Events.companyDetailsButtonTitle, for: .normal)
+        companyDetailsButton.addTarget(self, action: #selector(didTapCompanyButton), for: .touchUpInside)
+    }
+    
+    private func setupButtonStackView() {
+        let stackView = UIStackView(arrangedSubviews: [eventLocationButton, companyDetailsButton])
+        stackView.distribution = .fillEqually
+        stackView.spacing = .systemPadding
+        addSubview(stackView)
+        
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom).offset(CGFloat.systemPadding * 2)
+            make.leading.trailing.equalTo(headerView)
+            make.height.equalTo(36)
+        }
+    }
+    
+    private func setupRateHeaderLabel() {
+        rateHeaderLabel.text = Constants.Events.rateHeader.uppercased()
+        rateHeaderLabel.font = .contentBold
+        rateHeaderLabel.textColor = .secondaryColor
+        contentView.addSubview(rateHeaderLabel)
+        rateHeaderLabel.snp.makeConstraints { make in
+            make.top.equalTo(companyDetailsButton.snp.bottom).offset(CGFloat.systemPadding * 2)
+            make.centerX.equalToSuperview()
+        }
+    }
+    
+    private func setupRateView() {
+        rateView.rating = 0
+        contentView.addSubview(rateView)
+        rateView.didFinishTouchingCosmos = { [weak self] rating in
+            guard let viewModel = self?.viewModel else {
+                return
+            }
+            self?.viewDelegate?.didTapRateView(for: viewModel, rating: rating)
+        }
+        
+        rateView.snp.makeConstraints { make in
+            make.top.equalTo(rateHeaderLabel.snp.bottom).offset(CGFloat.smallPadding)
+            make.centerX.equalToSuperview()
+        }
+    }
+    
+    private func setupDescriptionView() {
+        contentView.addSubview(descriptionView)
+        descriptionView.snp.makeConstraints { make in
+            make.top.equalTo(rateView.snp.bottom).offset(CGFloat.systemPadding * 2)
+            make.leading.equalToSuperview().offset(CGFloat.systemPadding)
+            make.trailing.equalToSuperview().offset(-CGFloat.systemPadding)
+        }
+    }
+    
+    private func setupPresenterBioView() {
+        contentView.addSubview(presenterBioView)
+        presenterBioView.snp.makeConstraints { make in
+            make.top.equalTo(descriptionView.snp.bottom).offset(CGFloat.systemPadding)
+            make.leading.equalToSuperview().offset(CGFloat.systemPadding)
+            make.trailing.equalToSuperview().offset(-CGFloat.systemPadding)
+            make.bottom.equalToSuperview()
+        }
+    }
+    
+    private func hideRateViewIfNeeded() {
+        guard viewModel?.shouldShowRateView == false else {
             return
         }
-        companyButton.layoutIfNeeded()
-        let buttonHeight = max(minCompanyButtonHeight, titleLabel.frame.height + .systemPadding)
-        companyButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
-        companyButton.widthAnchor.constraint(equalToConstant: titleLabel.frame.width + .systemPadding).isActive = true
+        
+        rateView.isHidden = true
+        rateView.snp.makeConstraints { (make) in
+            make.height.equalTo(0)
+        }
+        
+        rateHeaderLabel.snp.makeConstraints { (make) in
+            make.height.equalTo(0)
+        }
     }
-    
+
     @objc
     private func didTapCompanyButton() {
         guard let company = viewModel?.company else {
             return
         }
         viewDelegate?.didTapCompanyButton(for: company)
+    }
+    
+    @objc
+    private func didTapEventLocationButton() {
+        guard let geolocation = viewModel?.geolocation else {
+            return
+        }
+        viewDelegate?.didTapEventLocationButton(for: geolocation)
     }
 }

@@ -31,13 +31,6 @@ class EventStoreShould: QuickSpec {
                 expect(presenter.events?.secondDayEvents as? [Presentation]).toEventually(equal(gateway.secondDayPresentations))
             }
 
-            it("should find event that is currently in progress, if any, and highlight it") {
-                sut.showPresentations(with: presenter)
-
-                expect(gateway.didReturnPresentations).toEventually(beTrue())
-                expect(presenter.events?.highlightedEvent as? Presentation).toEventually(equal(gateway.firstDayPresentations.first))
-            }
-
             context("error occurs while getting presentations from gateway") {
                 it("should tell presenter to show error") {
                     gateway.shouldShowError = true
@@ -64,14 +57,6 @@ class EventStoreShould: QuickSpec {
                 expect(gateway.didReturnWorkshops).toEventually(beTrue())
                 expect(presenter.events?.firstDayEvents as? [Workshop]).toEventually(equal(gateway.firstDayWorkshops))
                 expect(presenter.events?.secondDayEvents as? [Workshop]).toEventually(equal(gateway.secondDayWorkshops))
-            }
-
-            it("should find event that is currently in progress, if any, and highlight it") {
-                sut.showWorkshops(with: presenter)
-
-                expect(gateway.didReturnWorkshops).toEventually(beTrue())
-
-                expect(presenter.events?.highlightedEvent as? Workshop).toEventually(equal(gateway.firstDayWorkshops.first))
             }
 
             context("error occurs while getting presentations from gateway") {

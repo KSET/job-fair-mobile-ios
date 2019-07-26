@@ -29,7 +29,7 @@ class EventPresenterShould: QuickSpec {
 
         describe("show(events)") {
             it("should tell view controller to show events") {
-                let events = SortedEvents(firstDayEvents: [], secondDayEvents: [], highlightedEvent: nil)
+                let events = SortedEvents(firstDayEvents: [], secondDayEvents: [])
                 sut.show(events: events)
 
                 expect(viewController.didShowEvents) == true

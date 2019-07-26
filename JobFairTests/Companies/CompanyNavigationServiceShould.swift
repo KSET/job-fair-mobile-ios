@@ -22,19 +22,6 @@ class CompanyNavigationServiceShould: QuickSpec {
             sut = nil
         }
         
-        describe("navigateToCompanyFilter(companyFilterViewControllerDelegate: CompanyFilterViewControllerDelegate)") {
-            it("should present CompanyFilterViewController") {
-                let companyFilterViewControllerDelegate = CompanyListViewControllerMock()
-                sut.navigateToCompanyFilter(companyFilterViewControllerDelegate: companyFilterViewControllerDelegate, currentIndustryId: Constants.Common.defaultId)
-                
-                let presentedNavigationController = navigationController.presentedViewController
-                expect(presentedNavigationController).toEventually(beAKindOf(UINavigationController.self))
-                
-                let presentedViewController = (presentedNavigationController as? UINavigationController)?.viewControllers.first
-                expect(presentedViewController).toEventually(beAKindOf(CompanyFilterViewController.self))
-            }
-        }
-        
         describe("dismiss(animated: Bool, completion: (() -> Void)?)") {
             it("should dismiss CompanyFilterViewController") {
                 sut.dismiss()
